@@ -6,12 +6,12 @@ CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = main.o
 LINKOBJ  = main.o
-LIBS     = -L"D:/Others/有疑程序/Dev-Cpp/MinGW64/lib" -L"D:/Others/有疑程序/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
-INCS     = -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/include" -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
-CXXINCS  = -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/include" -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"D:/Others/有疑程序/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+LIBS     = -L"C:/Users/Eliza/Dev-Cpp/MinGW64/lib" -L"C:/Users/Eliza/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
+INCS     = -I"C:/Users/Eliza/Dev-Cpp/MinGW64/include" -I"C:/Users/Eliza/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Users/Eliza/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Users/Eliza/Dev-Cpp/MinGW64/include" -I"C:/Users/Eliza/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Users/Eliza/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Users/Eliza/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
 BIN      = 项目1.exe
-CXXFLAGS = $(CXXINCS) 
-CFLAGS   = $(INCS) 
+CXXFLAGS = $(CXXINCS) -std=c++11
+CFLAGS   = $(INCS) -std=c++11
 RM       = rm.exe -f
 
 .PHONY: all all-before all-after clean clean-custom

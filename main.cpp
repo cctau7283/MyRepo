@@ -1,6 +1,7 @@
 #include <iostream>
 #include<sstream>
 #include <list>
+#include<algorithm>
 using namespace std;
 
 
@@ -202,23 +203,27 @@ class poly{
 	
 	void poly::simplify()
 	{
-		list<Node>::iterator it=L.begin();
-		list<Node>::iterator it2=++it;
-		for(;it!=L.end();++it)
+		
+		struct {
+        bool operator()(Node a, Node b)
+        {   
+            return a.degree > b.degree;
+        }   
+    	} sortdeg;
+    	
+    	L.sort(sortdeg);
+    
+    	for (list<Node>::iterator it = L.begin(); it != L.end(); ++it) 
 		{
-			Node&n=*it;
-			for(;it2!=L.end();++it2)
-			{
-				Node&m=*it2;
-				if(n.degree==m.degree)
-				{
-					n.coefficient+=m.coefficient;
-					
-					L.erase(it2);
-				}
-				
+  			Node& n = *it;
+  			Node& m = *(it++);
+  			if(m.degree==n.degree)
+  			{
+  				n.coefficient+=m.coefficient;
+  				it=L.erase(it);
 			}
 		}
+
 	}
 	
 	
