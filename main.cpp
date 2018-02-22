@@ -42,7 +42,75 @@ class poly{
 	
 	poly poly::operator+(poly &as)
 	{
+		list<Node>::iterator it1 = L.begin();
+		list<Node>::iterator it2 = as.L.begin();
+		for (;it2 != as.L.end();) //我总觉得这样没法处理到as.L的最后一项，是不是要在末尾再加一点处理？ 
+		{
+  			Node& n1 = *it1;
+  			Node& n2 = *it2;
+  			if(n2.degree<n1.degree)
+  				++it2;
+  			else if(n1.degree<n2.degree)
+  				++it1;
+  			else if(n1.degree==n2.degree)
+  			{
+  				n1.coefficient+=n2.coefficient;
+  				it2=L.erase(it2);//或许++it2就足够 
+			}
+		}
 		
+		if(n1.degree==n2.degree)
+  			{
+  				n1.coefficient+=n2.coefficient;
+  			}//但是可以用更方便的循环？或者条件改为it2++返回值错误？ 
+		
+		return *this;
+	}
+	
+	poly poly::operator*(poly &as)
+	{
+		list<Node>::iterator it1 = L.begin();
+		list<Node>::iterator it2 = as.L.begin();
+		poly result;
+		for(;it1 != L.end();++it1)
+		{
+			Node&n1=*it1;
+			for(;it2 != as.L.end();++it2)
+			{
+				Node&n2=*it2;
+				result.L.push_back(n1.coefficient*n2.coefficient,n1.deg+n2.deg);
+			}
+			
+		}
+		
+		result.simplify();
+		return result;
+	} 
+	
+	poly poly::operator-(poly &as)
+	{
+		list<Node>::iterator it1 = L.begin();
+		list<Node>::iterator it2 = as.L.begin();
+		for (;it2 != as.L.end();)
+		{
+  			Node& n1 = *it1;
+  			Node& n2 = *it2;
+  			if(n2.degree>n1.degree)
+  				++it2;
+  			else if(n1.degree>n2.degree)
+  				++it1;
+  			else if(n1.degree==n2.degree)
+  			{
+  				n1.coefficient-=n2.coefficient;
+  				it2=L.erase(it2); 
+			}
+		}
+		if(n1.degree==n2.degree)
+  			{
+  				n1.coefficient+=n2.coefficient;
+  			}
+  		
+		return *this;
 	}
 	
 	enum CASE{ET_COEFFICIENT,ET_X,
