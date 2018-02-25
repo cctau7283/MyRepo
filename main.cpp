@@ -193,6 +193,8 @@ void poly::input(string a) {
       }
     }
   }
+
+  simplify();
 }
 
 void printp(Node a) {
