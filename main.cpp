@@ -172,7 +172,8 @@ void poly::input(string a) {
           current_state = ET_DEGREE;
           s.get();
           break;
-        } else if (s.peek() != '^' && deg == 1) {
+        } else if (s.peek() != '^') {
+          deg = 1;
           current_state = STORE;
           s.get();
           break;
