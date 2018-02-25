@@ -225,7 +225,7 @@ void poly::simplify() {
 
   for (list<Node>::iterator it = L.begin(); it != L.end(); ++it) {
     Node &n = *it;
-    Node &m = *(it++);
+    Node &m = *std::next(it, 1);
     if (m.degree == n.degree) {
       n.coefficient += m.coefficient;
       it = L.erase(it);
