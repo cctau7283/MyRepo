@@ -97,8 +97,7 @@ poly poly::operator-(poly &as) {
 enum CASE { ET_COEFFICIENT, ET_X, ET_CARET, ET_DEGREE, ET_PM, FAIL, STORE };
 
 void poly::input(string a) {
-  istringstream s;
-  s >> a;
+  istringstream s(a);
 
   CASE current_state = ET_PM;
   int deg = 0;
