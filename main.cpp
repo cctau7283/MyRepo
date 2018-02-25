@@ -186,9 +186,9 @@ void poly::input(string a) {
         if (!s.fail() && de > 0) {
           deg = de;
           current_state = STORE;
-          break;
         } else
           current_state = FAIL;
+        s.clear();
         break;
       }
     }
