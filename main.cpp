@@ -175,7 +175,6 @@ void poly::input(string a) {
         } else if (s.peek() != '^') {
           deg = 1;
           current_state = STORE;
-          s.get();
           break;
         } else
           current_state = FAIL;
