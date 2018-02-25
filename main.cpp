@@ -149,6 +149,7 @@ void poly::input(string a) {
           flag_no_cof = true;
           cof = 1.0;
         }
+        s.clear();
         current_state = ET_X;
         break;
       }
