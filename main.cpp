@@ -121,17 +121,22 @@ void poly::input(string a) {
         break;
       }
       case ET_PM: {
-        if (s.peek() == '+' || s.eof()) {
-          s.get();
+        if (s.eof()) {
+          stop_flag = true;
           break;
-        } else if (s.peek() == '-') {
-          neg = true;
-          s.get();
-          break;
-        } else if (s.eof())
-          break;
-        else if (s.peek() != '+' && s.peek() != '-' && flag_need_sign == true)
-          current_state = FAIL;
+        }
+
+        char ch = s.peek();
+        if (flag_need_sign) {
+          if (ch == '+' || ch == '-') {
+            neg = ch == '-';
+            s.get();
+            current_state = ET_COEFFICIENT;
+          } else {
+            current_state = FAIL;
+          }
+        } else
+          current_state = ET_COEFFICIENT;
         break;
       }
 
