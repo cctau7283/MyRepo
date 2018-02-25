@@ -165,7 +165,6 @@ void poly::input(string a) {
         } else if (s.peek() != 'x' && flag_no_cof == false)
           deg = 0;
         current_state = STORE;
-        s.get();
         break;
       }
       case ET_CARET: {
