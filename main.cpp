@@ -144,9 +144,11 @@ void poly::input(string a) {
         double co;
         s >> co;
         if (!s.fail())
-          co = cof;
-        else
+          cof = co;
+        else {
           flag_no_cof = true;
+          cof = 1.0;
+        }
         current_state = ET_X;
         break;
       }
