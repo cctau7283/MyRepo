@@ -65,9 +65,36 @@ poly poly::operator+(poly &as) {
     }
     
   }
+  
+    for(;it1!=L.end();)
+    {
+    	Node &n1 = *it1;
+    	Node &n2 = *it2;
+    	if(n1.degree==n2.degree)
+    	{
+    		poly3.L.push_back(Node((n2.coefficient+n1.coefficient),n1.degree));
+		}
+		else if(n1.degree!=n2.degree)
+		{
+			poly3.L.push_back(Node(n1.coefficient,n1.degree));
+			++it1;
+		}
+	}
  
+ 	Node &n1 = *it1;
+    Node &n2 = *it2;
+    if(n1.degree==n2.degree)
+    {
+    	poly3.L.push_back(Node((n2.coefficient+n1.coefficient),n1.degree));
+	}
+	else if(n1.degree!=n2.degree)
+	{
+		poly3.L.push_back(Node(n1.coefficient,n1.degree));
+		poly3.L.push_back(Node(n2.coefficient,n2.degree));
+	}
 
-  return poly3;
+	poly3.simplify();
+  	return poly3;
 }
 
 poly poly::operator*(poly &as) {
@@ -89,25 +116,35 @@ poly poly::operator*(poly &as) {
 poly poly::operator-(poly &as) {
   list<Node>::iterator it1 = L.begin();
   list<Node>::iterator it2 = as.L.begin();
-  Node &n1 = *it1;
-  Node &n2 = *it2;
   
+  poly poly3;
   for (; it2 != as.L.end();) {
     
-    if (n2.degree > n1.degree)
-      ++it2;
-    else if (n1.degree > n2.degree)
-      ++it1;
-    else if (n1.degree == n2.degree) {
-      n1.coefficient -= n2.coefficient;
-      it2 = L.erase(it2);
+    Node &n1 = *it1;
+    Node &n2 = *it2;
+    if (n2.degree < n1.degree)
+    {
+    	poly3.L.push_back(Node(n1.coefficient,n1.degree));
+    	++it1;
+	}
+      
+    else if (n1.degree < n2.degree)
+    {
+    	poly3.L.push_back(Node(n2.coefficient,n2.degree));
+    	++it2;
+	}
+      
+    else if (n1.degree == n2.degree) 
+	{
+    	poly3.L.push_back(Node((n2.coefficient-n1.coefficient),n1.degree));
+    	++it1;
+    	++it2;
     }
+    
   }
-  if (n1.degree == n2.degree) {
-    n1.coefficient += n2.coefficient;
-  }
+ 
 
-  return *this;
+  return poly3;
 }
 
 enum CASE { ET_COEFFICIENT, ET_X, ET_CARET, ET_DEGREE, ET_PM, FAIL, STORE };
@@ -213,7 +250,7 @@ void poly::input(string a) {
   simplify();
 }
 
-void printp(Node n) {
+void printp(Node n) {//感觉打印这里的函数真是写得啰啰嗦嗦的 
   if (n.coefficient > 0) 
   {
   	if(n.coefficient==1&&n.degree!=1)
@@ -230,10 +267,32 @@ void printp(Node n) {
 		}
 		else if(n.coefficient!=1&&n.degree!=1)
       		cout <<"+"<< n.coefficient << "x^" << n.degree;
+      	else if(n.degree==0)
+      	{
+      		cout<<"+"<<n.coefficient;
+		}
   }
 
   if (n.coefficient == 0) return;
-  if (n.coefficient < 0) cout << n.coefficient << "x^" << n.degree;
+  if (n.coefficient < 0) 
+  {
+  	if(n.degree>1)
+  	{
+  		cout << n.coefficient << "x^" << n.degree;
+	}
+	else if(n.coefficient!=-1&&n.degree==1)
+	{
+		cout<<n.coefficient<<"x";
+	}
+	else if(n.coefficient==-1&&n.degree==1)
+	{
+		cout<<"-x";
+	}
+	else if(n.degree==0)
+	{
+		cout<<n.coefficient;
+	}
+  };
 }
 
 void poly::print() {
@@ -256,6 +315,10 @@ void poly::print() {
 		}
 		else if(n.coefficient!=1&&n.degree!=1)
       		cout << n.coefficient << "x^" << n.degree;
+      	else if(n.degree==0)
+      	{
+      		cout<<n.coefficient;
+		}
       	
     } else
       printp(n);
