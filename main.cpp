@@ -26,6 +26,7 @@ class poly {
   void input(string a);
   void print();
   void simplify();
+  
 
   poly operator+(poly &as);
   poly operator*(poly &as);
@@ -33,30 +34,40 @@ class poly {
   poly operator/(poly &as);
 };
 
+
+
 poly poly::operator+(poly &as) {
   list<Node>::iterator it1 = L.begin();
   list<Node>::iterator it2 = as.L.begin();
-  Node &n1 = *it1;
-  Node &n2 = *it2;
   
+  poly poly3;
   for (; it2 != as.L.end();) {
     
+    Node &n1 = *it1;
+    Node &n2 = *it2;
     if (n2.degree < n1.degree)
-      ++it1;
+    {
+    	poly3.L.push_back(Node(n1.coefficient,n1.degree));
+    	++it1;
+	}
+      
     else if (n1.degree < n2.degree)
-      ++it2;
-    else if (n1.degree == n2.degree) {
-      n1.coefficient += n2.coefficient;
-      //it2 = L.erase(it2);
-      ++it2;
+    {
+    	poly3.L.push_back(Node(n2.coefficient,n2.degree));
+    	++it2;
+	}
+      
+    else if (n1.degree == n2.degree) 
+	{
+    	poly3.L.push_back(Node((n2.coefficient+n1.coefficient),n1.degree));
+    	++it1;
+    	++it2;
     }
+    
   }
+ 
 
-  if (n1.degree == n2.degree) {
-    n1.coefficient += n2.coefficient;
-  }
-
-  return *this;
+  return poly3;
 }
 
 poly poly::operator*(poly &as) {
