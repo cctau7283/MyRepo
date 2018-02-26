@@ -234,57 +234,34 @@ void poly::input(string a) {
   simplify();
 }
 
-void printp(Node n) {
-  if (n.coefficient > 0) {
-    if (n.coefficient == 1 && n.degree != 1) {
-      cout << "+x^" << n.degree;
-    } else if (n.coefficient == 1 && n.degree == 1) {
-      cout << "+x";
-    } else if (n.coefficient != 1 && n.degree == 1) {
-      cout << "+" << n.coefficient << "x";
-    } else if (n.coefficient != 1 && n.degree != 1)
-      cout << "+" << n.coefficient << "x^" << n.degree;
-    else if (n.degree == 0) {
-      cout << "+" << n.coefficient;
-    }
-  }
-
-  if (n.coefficient == 0)
-    return;
-  if (n.coefficient < 0) {
-    if (n.degree > 1) {
-      cout << n.coefficient << "x^" << n.degree;
-    } else if (n.coefficient != -1 && n.degree == 1) {
-      cout << n.coefficient << "x";
-    } else if (n.coefficient == -1 && n.degree == 1) {
-      cout << "-x";
-    } else if (n.degree == 0) {
-      cout << n.coefficient;
-    }
-  };
-}
-
 void poly::print() {
   list<Node>::iterator it = L.begin();
-  for (; it != L.end(); ++it) {
+  bool first = true;
+
+  for (list<Node>::iterator it = L.begin(); it != L.end();
+       ++it, first = false) {
     Node &n = *it;
+    bool positive = n.coefficient > 0;
+    double number = fabs(n.coefficient);
+    bool isOne = number == 1;
 
-    if (it == L.begin()) {
-      if (n.coefficient == 1 && n.degree != 1) {
-        cout << "x^" << n.degree;
-      } else if (n.coefficient == 1 && n.degree == 1) {
-        cout << "x";
-      } else if (n.coefficient != 1 && n.degree == 1) {
-        cout << n.coefficient << "x";
-      } else if (n.coefficient != 1 && n.degree != 1)
-        cout << n.coefficient << "x^" << n.degree;
-      else if (n.degree == 0) {
-        cout << n.coefficient;
-      }
+    if (!positive)
+      cout << '-';
+    else if (!first)
+      cout << '+';
 
-    } else
-      printp(n);
+    if (n.degree == 0 || !isOne)
+      cout << n.coefficient;
+
+    if (n.degree != 0) {
+      cout << 'x';
+    }
+
+    if (n.degree > 1) {
+      cout << '^' << n.degree;
+    }
   }
+
   cout << endl;
 }
 
