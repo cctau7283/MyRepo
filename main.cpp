@@ -36,16 +36,19 @@ class poly {
 poly poly::operator+(poly &as) {
   list<Node>::iterator it1 = L.begin();
   list<Node>::iterator it2 = as.L.begin();
+  Node &n1 = *it1;
+  Node &n2 = *it2;
+  
   for (; it2 != as.L.end();) {
-    Node &n1 = *it1;
-    Node &n2 = *it2;
+    
     if (n2.degree < n1.degree)
-      ++it2;
-    else if (n1.degree < n2.degree)
       ++it1;
+    else if (n1.degree < n2.degree)
+      ++it2;
     else if (n1.degree == n2.degree) {
       n1.coefficient += n2.coefficient;
-      it2 = L.erase(it2);
+      //it2 = L.erase(it2);
+      ++it2;
     }
   }
 
@@ -64,7 +67,7 @@ poly poly::operator*(poly &as) {
     Node &n1 = *it1;
     for (; it2 != as.L.end(); ++it2) {
       Node &n2 = *it2;
-      result.L.push_back(n1.coefficient * n2.coefficient, n1.deg + n2.deg);
+      result.L.push_back(Node(n1.coefficient*n2.coefficient, n1.degree + n2.degree));
     }
   }
 
@@ -75,9 +78,11 @@ poly poly::operator*(poly &as) {
 poly poly::operator-(poly &as) {
   list<Node>::iterator it1 = L.begin();
   list<Node>::iterator it2 = as.L.begin();
+  Node &n1 = *it1;
+  Node &n2 = *it2;
+  
   for (; it2 != as.L.end();) {
-    Node &n1 = *it1;
-    Node &n2 = *it2;
+    
     if (n2.degree > n1.degree)
       ++it2;
     else if (n1.degree > n2.degree)
@@ -197,10 +202,27 @@ void poly::input(string a) {
   simplify();
 }
 
-void printp(Node a) {
-  if (a.coefficient > 0) cout << "+" << a.coefficient << "x^" << a.degree;
-  if (a.coefficient == 0) return;
-  if (a.coefficient < 0) cout << a.coefficient << "x^" << a.degree;
+void printp(Node n) {
+  if (n.coefficient > 0) 
+  {
+  	if(n.coefficient==1&&n.degree!=1)
+    	{
+    		cout <<  "+x^" << n.degree;
+		}
+		else if(n.coefficient==1&&n.degree==1)
+		{
+			cout<<"+x";
+		}
+		else if(n.coefficient!=1&&n.degree==1)
+		{
+			cout<<"+"<<n.coefficient<<"x";
+		}
+		else if(n.coefficient!=1&&n.degree!=1)
+      		cout <<"+"<< n.coefficient << "x^" << n.degree;
+  }
+
+  if (n.coefficient == 0) return;
+  if (n.coefficient < 0) cout << n.coefficient << "x^" << n.degree;
 }
 
 void poly::print() {
@@ -209,7 +231,21 @@ void poly::print() {
     Node &n = *it;
 
     if (it == L.begin()) {
-      cout << n.coefficient << "x^" << n.degree;
+    	if(n.coefficient==1&&n.degree!=1)
+    	{
+    		cout <<  "x^" << n.degree;
+		}
+		else if(n.coefficient==1&&n.degree==1)
+		{
+			cout<<"x";
+		}
+		else if(n.coefficient!=1&&n.degree==1)
+		{
+			cout<<n.coefficient<<"x";
+		}
+		else if(n.coefficient!=1&&n.degree!=1)
+      		cout << n.coefficient << "x^" << n.degree;
+      	
     } else
       printp(n);
   }
@@ -242,6 +278,14 @@ int main(int argc, char **argv) {
   poly poly1;
   poly1.input(y);
   poly1.print();
+  cout << "Please type in another polynomial:";
+  string x;
+  cin>> x;
+  poly poly2,poly3;
+  poly2.input(x);
+  poly2.print();
+  poly3 = poly2+poly1;
+  poly3.print();
 
   return 0;
 }
