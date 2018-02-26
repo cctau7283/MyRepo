@@ -285,6 +285,10 @@ void poly::simplify() {
       it = L.erase(it);
     }
   }
+
+  L.remove_if([](Node& n) {
+    return n.coefficient == 0;
+  });
 }
 
 int main(int argc, char **argv) {
