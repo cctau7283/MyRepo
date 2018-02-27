@@ -2,6 +2,7 @@
 #include <iostream>
 #include <list>
 #include <sstream>
+#include <cmath>
 using namespace std;
 
 /* run this program using the console pauser or add your own getch,
@@ -41,58 +42,18 @@ poly poly::operator+(poly &as) {
   list<Node>::iterator it2 = as.L.begin();
   
   poly poly3;
-  for (; it2 != as.L.end();) {
-    
-    Node &n1 = *it1;
+  for (; it2 != as.L.end();++it2) 
+  {
     Node &n2 = *it2;
-    if (n2.degree < n1.degree)
-    {
-    	poly3.L.push_back(Node(n1.coefficient,n1.degree));
-    	++it1;
-	}
-      
-    else if (n1.degree < n2.degree)
-    {
-    	poly3.L.push_back(Node(n2.coefficient,n2.degree));
-    	++it2;
-	}
-      
-    else if (n1.degree == n2.degree) 
-	{
-    	poly3.L.push_back(Node((n2.coefficient+n1.coefficient),n1.degree));
-    	++it1;
-    	++it2;
-    }
-    
+    poly3.L.push_back(Node(n2.coefficient,n2.degree));
   }
   
-    for(;it1!=L.end();)
+    for(;it1!=L.end();++it1)
     {
     	Node &n1 = *it1;
-    	Node &n2 = *it2;
-    	if(n1.degree==n2.degree)
-    	{
-    		poly3.L.push_back(Node((n2.coefficient+n1.coefficient),n1.degree));
-		}
-		else if(n1.degree!=n2.degree)
-		{
-			poly3.L.push_back(Node(n1.coefficient,n1.degree));
-			++it1;
-		}
+    	poly3.L.push_back(Node(n1.coefficient,n1.degree));
 	}
- 
- 	Node &n1 = *it1;
-    Node &n2 = *it2;
-    if(n1.degree==n2.degree)
-    {
-    	poly3.L.push_back(Node((n2.coefficient+n1.coefficient),n1.degree));
-	}
-	else if(n1.degree!=n2.degree)
-	{
-		poly3.L.push_back(Node(n1.coefficient,n1.degree));
-		poly3.L.push_back(Node(n2.coefficient,n2.degree));
-	}
-
+	
 	poly3.simplify();
   	return poly3;
 }
@@ -250,78 +211,38 @@ void poly::input(string a) {
   simplify();
 }
 
-void printp(Node n) {//感觉打印这里的函数真是写得啰啰嗦嗦的 
-  if (n.coefficient > 0) 
-  {
-  	if(n.coefficient==1&&n.degree!=1)
-    	{
-    		cout <<  "+x^" << n.degree;
-		}
-		else if(n.coefficient==1&&n.degree==1)
-		{
-			cout<<"+x";
-		}
-		else if(n.coefficient!=1&&n.degree==1)
-		{
-			cout<<"+"<<n.coefficient<<"x";
-		}
-		else if(n.coefficient!=1&&n.degree!=1)
-      		cout <<"+"<< n.coefficient << "x^" << n.degree;
-      	else if(n.degree==0)
-      	{
-      		cout<<"+"<<n.coefficient;
-		}
-  }
-
-  if (n.coefficient == 0) return;
-  if (n.coefficient < 0) 
-  {
-  	if(n.degree>1)
-  	{
-  		cout << n.coefficient << "x^" << n.degree;
-	}
-	else if(n.coefficient!=-1&&n.degree==1)
-	{
-		cout<<n.coefficient<<"x";
-	}
-	else if(n.coefficient==-1&&n.degree==1)
-	{
-		cout<<"-x";
-	}
-	else if(n.degree==0)
-	{
-		cout<<n.coefficient;
-	}
-  };
-}
 
 void poly::print() {
   list<Node>::iterator it = L.begin();
-  for (; it != L.end(); ++it) {
-    Node &n = *it;
-
-    if (it == L.begin()) {
-    	if(n.coefficient==1&&n.degree!=1)
-    	{
-    		cout <<  "x^" << n.degree;
-		}
-		else if(n.coefficient==1&&n.degree==1)
-		{
-			cout<<"x";
-		}
-		else if(n.coefficient!=1&&n.degree==1)
-		{
-			cout<<n.coefficient<<"x";
-		}
-		else if(n.coefficient!=1&&n.degree!=1)
-      		cout << n.coefficient << "x^" << n.degree;
-      	else if(n.degree==0)
-      	{
-      		cout<<n.coefficient;
-		}
-      	
-    } else
-      printp(n);
+  bool iffirst=true;
+  bool ifone1=false,ifone2=false;
+  bool ifpositive=true;
+  
+  for (; it != L.end(); ++it,iffirst=false) 
+  {
+  	Node&n=*(it);
+  	ifpositive=(n.coefficient>0?true:false);
+  	ifone1=(n.coefficient==1);
+  	
+	if(!iffirst&&ifpositive)
+		cout<<"+";
+	
+	if(!ifone1)
+		cout<<n.coefficient;
+	else if(n.degree==0)
+		cout<<"1"; 
+		
+	if(n.degree==0)
+		continue;
+		
+	cout<<"x";
+	
+	ifone2=(n.degree==1);
+	if(!ifone2)
+	{
+		cout<<"^"<<n.degree;
+	}
+	
   }
   cout << endl;
 }
@@ -335,12 +256,18 @@ void poly::simplify() {
 
   for (list<Node>::iterator it = L.begin(); it != L.end(); ++it) {
     Node &n = *it;
-    Node &m = *std::next(it, 1);
+    auto nextIt = std::next(it, 1);
+    if (nextIt == L.end()) break;
+    
+    Node &m = *nextIt;
     if (m.degree == n.degree) {
       n.coefficient += m.coefficient;
       it = L.erase(it);
     }
   }
+   L.remove_if([](Node& n) {
+    return n.coefficient == 0;
+  });
 }
 
 int main(int argc, char **argv) {
