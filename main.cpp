@@ -67,45 +67,34 @@ poly poly::operator*(poly &as) {
     for (; it2 != as.L.end(); ++it2) {
       Node &n2 = *it2;
       result.L.push_back(Node(n1.coefficient*n2.coefficient, n1.degree + n2.degree));
+      result.print();
     }
   }
-
   result.simplify();
+  cout<<"this is ";
+  this->print();
   return result;
 }
 
 poly poly::operator-(poly &as) {
-  list<Node>::iterator it1 = L.begin();
+ list<Node>::iterator it1 = L.begin();
   list<Node>::iterator it2 = as.L.begin();
   
   poly poly3;
-  for (; it2 != as.L.end();) {
-    
-    Node &n1 = *it1;
+  for (; it2 != as.L.end();++it2) 
+  {
     Node &n2 = *it2;
-    if (n2.degree < n1.degree)
-    {
-    	poly3.L.push_back(Node(n1.coefficient,n1.degree));
-    	++it1;
-	}
-      
-    else if (n1.degree < n2.degree)
-    {
-    	poly3.L.push_back(Node(n2.coefficient,n2.degree));
-    	++it2;
-	}
-      
-    else if (n1.degree == n2.degree) 
-	{
-    	poly3.L.push_back(Node((n2.coefficient-n1.coefficient),n1.degree));
-    	++it1;
-    	++it2;
-    }
-    
+    poly3.L.push_back(Node(n2.coefficient,n2.degree));
   }
- 
-
-  return poly3;
+  
+    for(;it1!=L.end();++it1)
+    {
+    	Node &n1 = *it1;
+    	poly3.L.push_back(Node(n1.coefficient,n1.degree));
+	}
+	
+	poly3.simplify();
+  	return poly3;
 }
 
 enum CASE { ET_COEFFICIENT, ET_X, ET_CARET, ET_DEGREE, ET_PM, FAIL, STORE };
@@ -254,20 +243,20 @@ void poly::simplify() {
 
   L.sort(sortdeg);
 
-  for (list<Node>::iterator it = L.begin(); it != L.end(); ++it) {
+  for (list<Node>::iterator it = L.begin(); it != L.end();++it ) {
     Node &n = *it;
     auto nextIt = std::next(it, 1);
     if (nextIt == L.end()) break;
     
     Node &m = *nextIt;
     if (m.degree == n.degree) {
-      n.coefficient += m.coefficient;
-      it = L.erase(it);
+      m.coefficient += n.coefficient;
+      it=L.erase(it);
     }
+    
   }
-   L.remove_if([](Node& n) {
-    return n.coefficient == 0;
-  });
+  
+   L.remove_if([](Node& n) {return n.coefficient == 0;});
 }
 
 int main(int argc, char **argv) {
@@ -282,11 +271,16 @@ int main(int argc, char **argv) {
   cout << "Please type in another polynomial:";
   string x;
   cin>> x;
-  poly poly2,poly3;
+  poly poly2,poly3,poly4;
   poly2.input(x);
   poly2.print();
   poly3 = poly2+poly1;
+  cout<<"poly3=poly1+poly2=";
   poly3.print();
+  cout<<endl;
+  poly4=poly1*poly2;
+  cout<<"poly4=poly1*poly2=";
+  poly4.print();
 
   return 0;
 }
