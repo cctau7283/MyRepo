@@ -24,10 +24,13 @@ class poly {
   list<Node> L;
 
  public:
+  poly();
+  poly(poly&);
   void input(string a);
   void print();
   void simplify();
-  
+  void enlarge();
+  int countsector();
 
   poly operator+(poly &as);
   poly operator*(poly &as);
@@ -35,7 +38,22 @@ class poly {
   poly operator/(poly &as);
 };
 
+poly::poly()
+{
+	;
+}
 
+poly::poly(poly &a)
+{
+	list<Node>::iterator it1 = L.begin();
+	list<Node>::iterator it2 = a.L.begin();
+	
+	for(;it2!=a.L.end();++it2)
+	{
+		Node&n2=*it2;
+		L.push_back(Node(n2.coefficient,n2.degree));
+	}
+}
 
 poly poly::operator+(poly &as) {
   list<Node>::iterator it1 = L.begin();
@@ -64,15 +82,13 @@ poly poly::operator*(poly &as) {
   poly result;
   for (; it1 != L.end(); ++it1) {
     Node &n1 = *it1;
-    for (; it2 != as.L.end(); ++it2) {
+    for (it2=as.L.begin(); it2 != as.L.end(); ++it2) {
       Node &n2 = *it2;
       result.L.push_back(Node(n1.coefficient*n2.coefficient, n1.degree + n2.degree));
       result.print();
     }
   }
   result.simplify();
-  cout<<"this is ";
-  this->print();
   return result;
 }
 
@@ -96,6 +112,67 @@ poly poly::operator-(poly &as) {
 	poly3.simplify();
   	return poly3;
 }
+
+poly poly::operator/(poly &as)
+{
+	this->enlarge();
+	poly middle;
+	poly remain((*this));
+	cout<<"*";
+	remain.print();
+	poly polynew,blank;
+	
+	list<Node>::iterator it1 = L.begin();
+    list<Node>::iterator it2 = as.L.begin();
+    list<Node>::iterator it3 = remain.L.begin();
+    
+    if ((*it1).degree<(*it2).degree)
+    {
+    	cout<<"Wrong input!"<<endl;
+    	return blank;
+	}
+	
+	for(;it2!=as.L.begin();++it2)
+	{
+		Node&n1=*it1;
+		Node&n2=*it2;
+		Node&n3=(remain.L.front());
+		if(n2.degree>=n1.degree)
+		{
+			polynew.L.push_back(Node(n3.coefficient/n1.coefficient,n3.degree-n1.degree));
+			for(;it1!=L.end();++it1)
+			{
+				float cof=polynew.L.back().coefficient;
+				int deg=polynew.L.back().degree;
+				middle.L.push_back(Node(n1.coefficient*cof,n1.degree+deg));
+				middle.print();
+			}
+			remain=remain-middle;
+			//remain.print();
+		}
+		else
+			break;
+	}
+	
+	bool success=true;
+	for(;it3!=remain.L.end();++it3)
+	{
+		Node&n=*it3;
+		if(n.coefficient||n.degree)
+			success=false;
+	}
+	
+	if(success==true)
+	{
+		return polynew;
+	}
+	else
+	{
+		cout<<"This division cannot be realised."<<endl;
+		return blank;
+	}
+}
+
 
 enum CASE { ET_COEFFICIENT, ET_X, ET_CARET, ET_DEGREE, ET_PM, FAIL, STORE };
 
@@ -259,6 +336,33 @@ void poly::simplify() {
    L.remove_if([](Node& n) {return n.coefficient == 0;});
 }
 
+int poly::countsector()
+{
+	list<Node>::iterator it = L.begin();
+	int a=0;
+	for(;it!=L.end();++it)
+	{
+		++a;
+	}
+	return a;
+}
+
+void poly::enlarge()//用于增加系数为0的项。奇怪，print应该能输出这些项。。。 
+{
+	list<Node>::iterator it1 = L.begin();
+	
+	for(;(*it1).degree==0;++it1)
+	{
+		auto it2 = std::next(it1, 1);
+		Node&n1=*it1;
+		Node&n2=*it2;
+		if(n2.degree-n1.degree>1)
+		{
+			L.insert(it2,Node(0,n1.degree-1));
+		}
+	}
+}
+
 int main(int argc, char **argv) {
   struct Node;
 
@@ -267,20 +371,26 @@ int main(int argc, char **argv) {
   cin >> y;
   poly poly1;
   poly1.input(y);
-  poly1.print();
+//  poly1.print();
   cout << "Please type in another polynomial:";
   string x;
   cin>> x;
-  poly poly2,poly3,poly4;
+  poly poly2,poly3,poly4,poly5;
   poly2.input(x);
-  poly2.print();
+//  poly2.print();
   poly3 = poly2+poly1;
-  cout<<"poly3=poly1+poly2=";
-  poly3.print();
-  cout<<endl;
+//  cout<<"poly3=poly1+poly2=";
+//  poly3.print();
+//  cout<<endl;
   poly4=poly1*poly2;
-  cout<<"poly4=poly1*poly2=";
-  poly4.print();
+//  cout<<"poly4=poly1*poly2=";
+//  poly4.print();
+//  poly5=poly1/poly2;
+//  cout<<"poly5=poly1/poly2=";
+//  poly5.print();
+	poly1.enlarge();
+	poly poly6(poly1);
+	poly6.print();//用于测试enlarge函数 
 
   return 0;
 }
