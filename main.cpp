@@ -132,7 +132,7 @@ poly poly::operator/(poly &as)
     	return blank;
 	}
 	
-	for(;it2!=as.L.begin();++it2)
+	for(it1=L.begin();it2!=as.L.begin();++it2)
 	{
 		Node&n1=*it1;
 		Node&n2=*it2;
@@ -140,14 +140,16 @@ poly poly::operator/(poly &as)
 		if(n2.degree>=n1.degree)
 		{
 			polynew.L.push_back(Node(n3.coefficient/n1.coefficient,n3.degree-n1.degree));
-			for(;it1!=L.end();++it1)
+			for(it1=L.begin();it1!=L.end();++it1)
 			{
 				float cof=polynew.L.back().coefficient;
 				int deg=polynew.L.back().degree;
+				polynew.print();
 				middle.L.push_back(Node(n1.coefficient*cof,n1.degree+deg));
-				middle.print();
+				//middle.print();
 			}
 			remain=remain-middle;
+			middle.L.clear();
 			//remain.print();
 		}
 		else
@@ -169,7 +171,7 @@ poly poly::operator/(poly &as)
 	else
 	{
 		cout<<"This division cannot be realised."<<endl;
-		return blank;
+		return polynew;
 	}
 }
 
@@ -351,7 +353,7 @@ void poly::enlarge()//用于增加系数为0的项。奇怪，print应该能输出这些项。。。
 {
 	list<Node>::iterator it1 = L.begin();
 	
-	for(;(*it1).degree==0;++it1)
+	for(;(*it1).degree>0;++it1)
 	{
 		auto it2 = std::next(it1, 1);
 		Node&n1=*it1;
